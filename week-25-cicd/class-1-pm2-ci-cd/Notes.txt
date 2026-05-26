@@ -1,0 +1,97 @@
+# Class Notes for Week 25.1
+
+Week 25.1 by Sargam!
+Process Management 
+
+(PM2 Process Manager)
+
+PM2 is used to:
+- Keep apps running continuously.
+- Automatically restart crashed apps.
+- Provide monitoring and logging.
+- Support running multiple app instances for better performance.
+
+-------------------------------------------------------------------------------------------------
+SSH into virtual machine and setup Node:
+
+sudo apt update
+sudo apt install nodejs
+node -v
+-> v16.x.x
+sudo apt install npm
+npm install express
+
+(AWS Startup: Apply for $10,000 free credits)
+
+vi app.js (paste code)
+node app.js (server is running on localhost:3000)
+
+Checking and killing processes manually:
+lsof
+lsof -i :3000
+kill [PID] (e.g., kill 7833) -> This also terminates/kills server.
+-------------------------------------------------------------------------------------------------
+Installing and using PM2:
+
+sudo npm i -g pm2
+pm2 start app.js
+(Server runs on localhost:3000)
+
+pm2 status
+Outputs table: 
+id (0), name (index), mode (Fork), restarted(0), status (online), cpu (0%), memory (26.7mb).
+
+pm2 stop index (e.g., pm2 stop 0)
+pm2 ls
+(pm2 status will now show: 0, index, Fork, 1, Stopped, 0%, 0kb)
+PM2 is something like nodemon, but for production.
+
+pm2 examples (will show all PM2 commands)
+pm2 delete index (e.g., pm2 delete 0)
+-------------------------------------------------------------------------------------------------
+Finding ports and PIDs:
+
+lsof gives port number, PID
+lsof -i :3000 -> shows COMMAND, PID, USER, TYPE, NODE, NAME.
+Example output: COMMAND:node x20, PID: 8119, USER: ubuntu, TYPE: IPv6, NODE: TCP, NAME: 3000 LISTEN.
+
+kill 8119
+pm2 server will now restart on some another port, will different PID.
+-------------------------------------------------------------------------------------------------
+CI/CD (Continuous Integration / Continuous Deployment)
+
+Environments: 
+Dev environment -> Stage environment -> Prod environment.
+Deploying to dev environment is CD.
+
+When someone pushes code to the main branch:
+- Build the project.
+- Check for Lint (Formatting).
+(This integration is CI).
+
+Open source projects:
+Contributors and maintainers use linting to ensure consistent formatting across the codebase (e.g., tabs vs. 2 spaces vs. 4 spaces).
+
+CI (Continuous Integration): Unit testing, integration testing, linting, formatting.
+CD (Continuous Deployment): Deployment to a server.
+
+GitHub Actions: (Use of CI/CD)
+Uses .github/workflows/test.yml to:
+- Test if code is passing or failing.
+- Deploy code somewhere.
+- Linting and formatting.
+
+[Video Timestamp: 1:10:00]
+
+Creating a Next.js App in a VM:
+npx create-next-app@latest testapp
+
+GitHub Actions setup:
+.github/workflows/deploy.yml
+.github/workflows/test.yml
+
+actions/checkout@v2 (automatically does git clone inside the action).
+-------------------------------------------------------------------------------------------------
+25.1 Q&A
+
+How to check GitHub Actions locally without pushing to GitHub?
