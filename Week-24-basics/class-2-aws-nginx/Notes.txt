@@ -1,0 +1,148 @@
+# Class Notes for Week 24.2
+
+Week 24.2
+AWS (Amazon Web Services), AWS Certification, Azure Certification 
+(interesting video in Cohort 2 about Object Store and CDNs).
+
+Amazon's cloud service uses: 
+- Rent servers (VMs)
+- Manage domains
+- Upload objects like mp4 files, jpgs...
+- Autoscale servers
+- Create K8s clusters
+
+Goldman Sachs, OpenAI uses AWS.
+
+EC2 (Elastic Compute Cloud): flexible computation.
+Public IP (changes on restart) vs Elastic IP (permanent, does not change, maximum 5 usually). 
+AWS, GCP, Azure gives free credits.
+
+--------------------------------------------------------------------------------------------------
+Steps:
+EC2 -> Launch Instance -> (Ubuntu) ->
+Key pair (public .pem, private key RSA). 
+
+Security Groups: (by default ports are closed) -> tells which ports are open. 
+22 for SSH (must open), 443 for HTTPS, 80 for HTTP.
+
+t2.small (2vCPUs, 4GB RAM, 100GB SSD).
+
+[Press Launch]
+--------------------------------------------------------------------------------------------------
+Public IP: 13.50.241.231. [Check in browser, nothing is running initially.]
+SSH into machine via terminal:
+
+[ssh root-default@ip-of-machine]
+ssh ec2-user@... (default user for Amazon Linux)
+ssh ubuntu@13.50.241.231 (default user for Ubuntu)
+
+Using input file:
+ssh -i mankesh-key.pem ubuntu@13.50.x.x
+If error "File mankesh-key.pem is too open (0644)"(.rw-r--r--), fix permissions:
+chmod 700 mankesh-key.pem (.rwx------)
+
+git clone https://github.com/hkirat/sum-server.git
+ls
+cd sum-server
+npm install 
+-> Node not found.
+sudo apt-get install nodejs (One option, not recommended)
+
+
+> Another better option: Go with NVM (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+[Close and reopen terminal.]
+
+nvm -v
+nvm install --lts (or nvm list-remote, nvm install 20)
+node -v 
+-> v20.x.x     #Successfully installed node v20.x.x
+npm -v
+-> 8.x.x    #Successfully installed npm v8.x.x
+
+[Restart Machine if Stops]
+cd sum-server
+npm install
+node index.js (Server starts)
+
+Add port 8080 to security group and test: 13.50.241.231:8080/todos
+This is how you deploy a backend on EC2. 
+For frontend React deployment, you should not use EC2 typically.
+--------------------------------------------------------------------------------------------------
+Reverse Proxies (Why need Nginx?)
+
+VPN is a Forward Proxy. 
+http://my-website.com is automatically redirects to http://my-website.com:80
+IP:Port is not good looking (e.g., https://google.com:443 vs https://google.com).
+
+Try Running Node on Port 80 -> Permission Denied! 
+You can't run multiple processes on port 80. As Express server is already running on port 80.
+
+if you sell clothes and shoes. 
+sellcloths.com running on port 3000, sellshoes.com running on port 3001. 
+Both need port 80 for HTTP. 
+Nginx works as a reverse proxy.
+
+Architecture:
+EC2 Server -> Nginx (Port 80) -> routes cloths.com to node index.js (Port 3000) and shoe.com to node index.js (Port 3001).
+
+---------------------------------------------------------------------------------------------------
+Installing Nginx:
+
+sudo apt update
+sudo apt install nginx
+This should start the Nginx server on port 80. 
+sudo nginx -s reload
+
+Expose port 80 (HTTP) on EC2 machine.
+
+Architecture:
+EC2 Server (IP: 32.50.1.2) ->
+Nginx listens on 80. redirects requests to 
+-> 8080 for cloths.com, 
+-> 8081 for shoe.com.
+
+Domain Name Records:
+A Record: clothsapp -> 32.50.1.2
+A Record: shoeapp -> 32.50.1.2
+(Types of records: A, AAAA, CNAME, TXT)
+Test http://shoeapp.100xdevs.com
+
+Copy folder: cp -r sum-server sum-server-2. 
+Change port to 8081. Start two processes(One on 8080, Another on 8081).
+
+Update Nginx Configuration so that it can auto-redirect requests:
+sudo vi /etc/nginx/nginx.conf
+
+(Paste code from Notes. Syntax weird hai, not JSON)
+
+sudo nginx -s reload
+Run node index.js (Run process)
+
+Access: http://ec2-13-50-x-x...amazonaws.com/todos
+(Now we just need to open port 80 in VM, not 8080 or 8081).
+
+---------------------------------------------------------------------------------------------------
+Next Week:
+Certificate Management (HTTP -> HTTPS).
+
+Heavy Assignments / Tasks:
+- Create a GCP account. [do this over there]
+- Replace Nginx -> Try Traefik / HAProxy / Apache. [Will not Cover]
+- Try deploying a React App.
+- Get a domain (Namecheap, GoDaddy). 
+- Try ASGs (Auto Scaling Groups) in AWS.
+- Try to do certificate management.
+- Create a CI/CD pipeline to auto-deploy YAML.
+
+-------------------------------------------------------------------------------------------------
+24.2 Q&A
+DevOps is easy, don't have to write much code, but debugging becomes painful.
+Nginx Process vs Container OS (totally different).
+Cloudflare (why used, later will understand)
+Process Management (forever or pm2).
+Load Balancers (will learn).
+Blue Green Deployment / Rolling updates.
+
+Next Week: Process Management, CI/CD, Certificate Management.
