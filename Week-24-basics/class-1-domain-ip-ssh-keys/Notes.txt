@@ -1,0 +1,162 @@
+# Class Notes for Week 24.1
+
+Week 24.1
+> Domain vs IPs
+Localhost is also a domain like http://localhost:3000 which loops back to the current machine.
+ping localhost -> 127.0.0.1
+ping google.com -> 142.250.199.14
+
+> IPv4 vs IPv6
+IPv4 examples: 132.11.22.133, 11.11.22.33, 0.2.3.4, 0.0.0.0, 255.255.255.255
+Invalid IPv4: 1000.500.200.300
+(256)^4 IP addresses are there. We rent IPv4 addresses. 
+
+--------------------------------------------------------------------------------------------------
+> Local Network Routing (Mild Hosting)
+
+Router: 192.168.x.x
+Private IP address: 192.168.x.x (Mac, Windows, Phone) Part of IntraNet.
+
+node index.js
+Server is running on http://localhost:3000
+Try 192.168.x.x via phone (connected with the same Wi-Fi)
+
+--------------------------------------------------------------------------------------------------
+> Ways to see IP address:
+
+ifconfig
+lo0 127.0.0.1
+en0 inet 192.168.1.43 (my device private IP on Wi-Fi)
+(ipconfig says no such command, use ifconfig)
+
+Another way:
+npx serve
+Local: http://localhost:49840
+Network: http://192.168.1.43:49890
+
+Can play low latency Counter-Strike game over local network.
+Port scan on a network se open port pata chal jate hai (open ports can be found).
+So don't expose something via npx serve, it's not on localhost, it's on the local network. 
+Anyone connected with the same Wi-Fi can see it.
+
+--------------------------------------------------------------------------------------------------
+> Mini DNS server locally
+
+sudo vi /etc/hosts
+255.255.255.255 broadcasthost
+127.0.0.1 localhost
+127.0.0.1 123.vercel.app
+
+[Google IP] codeforces.com (Prank with a friend)
+Phishing Insta: [Fake IP] instagram.com 
+(Ask a friend to log in even in incognito. 
+Add logic as soon as they logs in, redirect them to the real Instagram account).
+
+DNS propagation takes some time, so add a local entry for testing.
+Don't touch this file, you will forget and will say, My Codeforces is not working.
+--------------------------------------------------------------------------------------------------
+How to Deploy Apps (Actual Hosting)?
+
+- Renting servers on a cloud
+- Renting compute yourself in datacenters
+- Self-hosting (buying a CPU rack in your house)
+- Serverless provider (leave for now)
+- Cloud Native options (K8s) (leave for now)
+
+Cloud (Expensive, no maintenance) Convenience! 
+vs 
+Self-hosting (Cheaper, maintenance is high). 
+
+How to deploy your website (YouTube video - last 30 mins skip as it covers serverless or Kubernetes).
+90% of the time you will host websites on the Virtual Machine, 
+(where you do not host on Bare Metal Machine in-house server rack / in a data center yourself.)
+
+Virtual Machine
+VM1 (OS), VM2 (OS) <-  Hypervisor <- Hardware
+Hypervisor limits resources per virtual machine.
+Data centers usually have a physical hypervisor, our laptops have a virtual hypervisor.
+
+A better way to build a LeetCode clone or Replit clone is using a VM.
+
+[NOTE: Read theory notes: Hypervisor, VM]
+
+For a Todo application, it does not matter if it runs on a VM or Bare Metal.
+Bitcoin mining -> self-hosting (Bare Metal has good performance. Virtual machine does not have good performance).
+
+Bare metal are not easily available. 
+Scalability issue. 
+Reason to rent: Bare Metal machine (They want to run Bare Metal near to Japan exchange - waise in-house bhi laga sakte hai, but...)
+
+[NOTES: Bare Metal Server theory Class Notes timestamp 1:02:00]
+--------------------------------------------------------------------------------------------------
+SSH Protocol, Password-based Auth
+
+Until now we have learned HTTP protocol, Websocket protocol. 
+
+Jab hum website deploy karte hai AWS / DigitalOcean / Azure par, toh ek virtual machine start hoti hai cloud par somewhere, aur hume us machine ka public IP address milta hai 
+(When we deploy a website on AWS/DigitalOcean/Azure, a virtual machine starts on the cloud somewhere, and we get that machine's public IP address).
+
+Now you have a small machine running with internet availability.
+git clone over there. We SSH into that machine to run. SSH protocol to talk to that VM.
+
+SMTP (Simple Mail Transfer Protocol), 
+FTP (File Transfer Protocol) used for transferring files between computers.
+
+[NOTE: Read SSH Protocol theory class notes timestamp 1:05:00.]
+
+You get terminal access to that machine.
+
+Password-based Auth and Public/Private Key
+Cloud Providers: AWS, GCP, Azure (UPI enabled, Credit Card required, reliable).
+DigitalOcean (easy, cheaper, card with international transition enabled).
+
+Create an account on DigitalOcean. 
+Virtual machine names: 
+Droplets (DigitalOcean), 
+EC2 (AWS - Elastic Compute).
+
+Plans: Intel CPU $8/mo (1GB 1CPU), $16/mo, $24/mo, $64/mo. 
+NVMe SSD storage and transfer limits.
+
+ssh root@139.59.x.x
+password:
+ls
+pwd 
+-> /root
+mkdir test
+cd test/
+git clone https://github.com/100xdevs/week.git
+ls
+cd week27
+ls 
+-> index.js, package.json
+npm install 
+-> command npm not found (we don't have Node over there).
+--------------------------------------------------------------------------------------------------
+SSH Key Cryptography: Public Key + Private Key
+
+: Attacker
+Message ("I will attack on this date") + Attacker's Private Key = Encrypted text
+Encrypted text + Attacker's Public Key = Decrypted message ("I will attack on this date")
+
+: Government
+Message ("We will find you") + Attacker's Public Key = Encrypted text
+Encrypted text + Attacker's Private Key = Decrypted message ("We will find you")
+
+Public keys are stored at ~/.ssh/authorized_keys
+DigitalOcean / GitHub uses public keys. 
+Check if someone has access to your laptop.
+--------------------------------------------------------------------------------------------------
+Encryption Algorithms: RSA, Ed25519
+
+Generate public-private keypair:
+ssh-keygen
+cat ~/.ssh/id_rsa.pub (or id_ed25519.pub)
+cat ~/.ssh/id_rsa
+
+(Put the public key in the VM's authorized_keys).
+
+known_hosts file has fingerprints of GitHub / VM, 
+it saves from Man-in-the-Middle (MITM) attacks and DNS hijack.
+
+--------------------------------------------------------------------------------------------------
