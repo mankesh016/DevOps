@@ -1,0 +1,27 @@
+{
+  "name": "class-1-prisma-older",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node dist/index.js",
+    "dev": "npm run build && npm run start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^18.0.0",
+    "dotenv": "^17.4.1",
+    "prisma": "^5.20.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
+  }
+}
