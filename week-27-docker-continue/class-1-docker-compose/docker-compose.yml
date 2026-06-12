@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+
+  user_project:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/postgres
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
