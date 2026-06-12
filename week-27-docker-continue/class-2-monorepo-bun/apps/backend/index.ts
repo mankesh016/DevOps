@@ -5,11 +5,13 @@ const app = express();
 app.use(express.json());
 
 app.get("/users", async (req, res) => {
+  console.log("GET request to /users endpoint");
   const users = await prisma.user.findMany({});
   res.json(users);
 });
 
 app.post("/user", async (req, res) => {
+  console.log("POST request to /users endpoint");
   const { username, password } = req.body;
 
   if (!username || !password) {

@@ -1,0 +1,36 @@
+## Build the docker image
+## Push the docker image to docker hub
+## SSH into vm and start the new image
+
+name: Deploy the backend
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "week-27-docker-continue/class-2-monorepo-bun/**"
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-actions@v3
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+
+      - name: Build and Push Image
+        uses: docker/build-push-actions@v4
+        with:
+          context: ./week-27-docker-continue/class-2-monorepo-bun
+          file: ./docker/Dockerfile.backend
+          push: true
+          tags:
+            - ${{secrets.DOCKERHUB_USERNAME}}/todo-app-backend:latest
+            - ${{secrets.DOCKERHUB_USERNAME}}/todo-app-backend:${{ github.sha }}
+
+      ## deploy to VM
