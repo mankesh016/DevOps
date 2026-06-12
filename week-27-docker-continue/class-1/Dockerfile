@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . . 
 
-ENV DATABASE_URL="neon-db-connection-string-here"
+ENV DATABASE_URL="postgresql://postgres:mysecretpassword@localhost:5432/postgres"
 
 RUN npx prisma migrate deploy
 RUN npx prisma generate
