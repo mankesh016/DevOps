@@ -33,3 +33,4 @@ jobs:
             ${{secrets.DOCKERHUB_USERNAME}}/todo-app-backend:${{ github.sha }}
 
       ## deploy to VM
+      ## checkout another repo class-2-sync

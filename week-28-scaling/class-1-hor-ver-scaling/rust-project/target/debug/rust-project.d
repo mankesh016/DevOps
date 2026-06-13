@@ -1,0 +1,1 @@
+/Users/mankeshmeena/Desktop/DevOps/week-28-asg/class-1-hor-ver-scaling/rust-project/target/debug/rust-project: /Users/mankeshmeena/Desktop/DevOps/week-28-asg/class-1-hor-ver-scaling/rust-project/src/main.rs
