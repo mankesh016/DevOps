@@ -1,3 +1,6 @@
 [submodule "week-25-cicd/class-2-monorepo-deploy/starter-app-sync"]
 	path = week-25-cicd/class-2-monorepo-deploy/starter-app-sync
 	url = https://github.com/mankesh016/test-deployment-monorepo.git
+[submodule "week-27-docker-continue/class-2-sync"]
+	path = week-27-docker-continue/class-2-sync
+	url = https://github.com/mankesh016/test-monorepo-bun.git
